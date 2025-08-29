@@ -8,6 +8,8 @@ class UsuariosServiceApplicationTests {
 
     @Test
     void contextLoads() {
+        // default implementation ignored
     }
 
 }
+

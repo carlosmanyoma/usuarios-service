@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2025-08-28T22:15:57" hostname="CARLOS-MANYOMA" time="3.023">
+  <properties/>
+  <testcase name="findAll_DebeRetornarListaDeUsuarios()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="2.833"/>
+  <testcase name="validarDocumentoIdentidad_ConDocumentoValido_DebeRetornarTrue()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.008"/>
+  <testcase name="cambiarContraseña_ConIdValido_DebeCambiarContraseñaExitosamente()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.037"/>
+  <testcase name="actualizarUsuario_ConDatosValidos_DebeActualizarUsuarioExitosamente()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.008"/>
+  <testcase name="actualizarUsuario_ConCorreoNoCambiado_DebeActualizarSinValidarDuplicado()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.007"/>
+  <testcase name="crearUsuario_ConCorreoDuplicado_DebeLanzarExcepcion()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.015"/>
+  <testcase name="validarCorreo_ConCorreoValido_DebeRetornarTrue()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.006"/>
+  <testcase name="validarEdad_ConUsuarioMenorDeEdad_DebeRetornarFalse()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.009"/>
+  <testcase name="validarDocumentoIdentidad_ConDocumentoInvalido_DebeRetornarFalse()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.007"/>
+  <testcase name="validarEdad_ConUsuarioMayorDeEdad_DebeRetornarTrue()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.006"/>
+  <testcase name="validarCorreo_ConCorreoInvalido_DebeRetornarFalse()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.005"/>
+  <testcase name="crearUsuario_ConCorreoInvalido_DebeLanzarExcepcion()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.008"/>
+  <testcase name="crearUsuario_ConDocumentoIdentidadDuplicado_DebeLanzarExcepcion()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.007"/>
+  <testcase name="crearUsuario_ConUsuarioMenorDeEdad_DebeLanzarExcepcion()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.007"/>
+  <testcase name="validarCelular_ConCelularValido_DebeRetornarTrue()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.005"/>
+  <testcase name="crearUsuario_ConDocumentoIdentidadInvalido_DebeLanzarExcepcion()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.007"/>
+  <testcase name="crearUsuario_ConDatosValidos_DebeCrearUsuarioExitosamente()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.007"/>
+  <testcase name="validarCelular_ConCelularInvalido_DebeRetornarFalse()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.003"/>
+  <testcase name="crearUsuario_ConCelularInvalido_DebeLanzarExcepcion()" classname="com.reto.usuarios.domain.services.UsuarioDomainServiceTest" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

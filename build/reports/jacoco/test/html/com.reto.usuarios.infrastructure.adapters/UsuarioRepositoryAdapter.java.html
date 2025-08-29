@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioRepositoryAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">usuarios-service</a> &gt; <a href="index.source.html" class="el_package">com.reto.usuarios.infrastructure.adapters</a> &gt; <span class="el_source">UsuarioRepositoryAdapter.java</span></div><h1>UsuarioRepositoryAdapter.java</h1><pre class="source lang-java linenums">package com.reto.usuarios.infrastructure.adapters;
+
+import com.reto.usuarios.domain.model.Usuario;
+import com.reto.usuarios.domain.ports.UsuarioRepository;
+import com.reto.usuarios.infrastructure.entities.UsuarioEntity;
+import com.reto.usuarios.infrastructure.mappers.UsuarioMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Repository
+<span class="nc" id="L15">@RequiredArgsConstructor</span>
+public class UsuarioRepositoryAdapter implements UsuarioRepository {
+
+    private final UsuarioJpaRepository usuarioJpaRepository;
+    private final UsuarioMapper usuarioMapper;
+
+    @Override
+    public Usuario save(Usuario usuario) {
+<span class="nc" id="L23">        UsuarioEntity entity = usuarioMapper.toEntity(usuario);</span>
+<span class="nc" id="L24">        UsuarioEntity savedEntity = usuarioJpaRepository.save(entity);</span>
+<span class="nc" id="L25">        return usuarioMapper.toDomain(savedEntity);</span>
+    }
+
+    @Override
+    public Optional&lt;Usuario&gt; findById(Long id) {
+<span class="nc" id="L30">        return usuarioJpaRepository.findById(id)</span>
+<span class="nc" id="L31">                .map(usuarioMapper::toDomain);</span>
+    }
+
+    @Override
+    public Optional&lt;Usuario&gt; findByCorreo(String correo) {
+<span class="nc" id="L36">        return usuarioJpaRepository.findByCorreo(correo)</span>
+<span class="nc" id="L37">                .map(usuarioMapper::toDomain);</span>
+    }
+
+    @Override
+    public Optional&lt;Usuario&gt; findByDocumentoIdentidad(String documentoIdentidad) {
+<span class="nc" id="L42">        return usuarioJpaRepository.findByDocumentoIdentidad(documentoIdentidad)</span>
+<span class="nc" id="L43">                .map(usuarioMapper::toDomain);</span>
+    }
+
+    @Override
+    public List&lt;Usuario&gt; findAll() {
+<span class="nc" id="L48">        return usuarioJpaRepository.findAll().stream()</span>
+<span class="nc" id="L49">                .map(usuarioMapper::toDomain)</span>
+<span class="nc" id="L50">                .collect(Collectors.toList());</span>
+    }
+
+    @Override
+    public void deleteById(Long id) {
+<span class="nc" id="L55">        usuarioJpaRepository.deleteById(id);</span>
+<span class="nc" id="L56">    }</span>
+
+    @Override
+    public boolean existsByCorreo(String correo) {
+<span class="nc" id="L60">        return usuarioJpaRepository.existsByCorreo(correo);</span>
+    }
+
+    @Override
+    public boolean existsByDocumentoIdentidad(String documentoIdentidad) {
+<span class="nc" id="L65">        return usuarioJpaRepository.existsByDocumentoIdentidad(documentoIdentidad);</span>
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+<span class="nc" id="L70">        return usuarioJpaRepository.existsById(id);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

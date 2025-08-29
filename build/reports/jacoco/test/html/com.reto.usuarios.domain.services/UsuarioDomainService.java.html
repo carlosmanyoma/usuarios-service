@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioDomainService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">usuarios-service</a> &gt; <a href="index.source.html" class="el_package">com.reto.usuarios.domain.services</a> &gt; <span class="el_source">UsuarioDomainService.java</span></div><h1>UsuarioDomainService.java</h1><pre class="source lang-java linenums">package com.reto.usuarios.domain.services;
+
+import com.reto.usuarios.domain.model.Usuario;
+import com.reto.usuarios.domain.ports.UsuarioRepository;
+import com.reto.usuarios.domain.ports.UsuarioService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
+@Service
+<span class="fc" id="L17">@RequiredArgsConstructor</span>
+public class UsuarioDomainService implements UsuarioService {
+
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public Usuario crearUsuario(Usuario usuario) {
+        // Validaciones de negocio
+<span class="fc" id="L26">        validarDatosUsuario(usuario);</span>
+        
+        // Encriptar contraseña
+<span class="fc" id="L29">        usuario.setClave(passwordEncoder.encode(usuario.getClave()));</span>
+        
+        // Establecer valores por defecto
+<span class="fc" id="L32">        usuario.setActivo(true);</span>
+<span class="fc" id="L33">        usuario.setFechaCreacion(LocalDate.now());</span>
+<span class="fc" id="L34">        usuario.setFechaActualizacion(LocalDate.now());</span>
+        
+<span class="fc" id="L36">        return usuarioRepository.save(usuario);</span>
+    }
+
+    @Override
+    public Usuario obtenerUsuarioPorId(Long id) {
+<span class="fc" id="L41">        return usuarioRepository.findById(id)</span>
+<span class="pc" id="L42">                .orElseThrow(() -&gt; new RuntimeException(&quot;Usuario no encontrado&quot;));</span>
+    }
+
+    @Override
+    public Optional&lt;Usuario&gt; obtenerUsuarioPorCorreo(String correo) {
+<span class="nc" id="L47">        return usuarioRepository.findByCorreo(correo);</span>
+    }
+
+    @Override
+    public List&lt;Usuario&gt; findAll() {
+<span class="fc" id="L52">        return usuarioRepository.findAll();</span>
+    }
+
+    @Override
+    public Usuario actualizarUsuario(Usuario usuario) {
+<span class="fc" id="L57">        Usuario usuarioExistente = obtenerUsuarioPorId(usuario.getId());</span>
+        
+        // Validar que el correo no esté duplicado si cambió
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (!usuarioExistente.getCorreo().equals(usuario.getCorreo()) &amp;&amp;</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">            usuarioRepository.existsByCorreo(usuario.getCorreo())) {</span>
+<span class="nc" id="L62">            throw new RuntimeException(&quot;El correo ya está registrado&quot;);</span>
+        }
+        
+        // Preservar campos que no deben cambiar
+<span class="fc" id="L66">        usuario.setFechaCreacion(usuarioExistente.getFechaCreacion());</span>
+<span class="fc" id="L67">        usuario.setFechaActualizacion(LocalDate.now());</span>
+<span class="fc" id="L68">        usuario.setActivo(usuarioExistente.isActivo());</span>
+<span class="fc" id="L69">        usuario.setClave(usuarioExistente.getClave()); // Preservar contraseña</span>
+        
+<span class="fc" id="L71">        return usuarioRepository.save(usuario);</span>
+    }
+
+    @Override
+    public Usuario cambiarContraseña(Long id, String nuevaContraseña) {
+<span class="fc" id="L76">        Usuario usuario = obtenerUsuarioPorId(id);</span>
+<span class="fc" id="L77">        usuario.setClave(passwordEncoder.encode(nuevaContraseña));</span>
+<span class="fc" id="L78">        usuario.setFechaActualizacion(LocalDate.now());</span>
+<span class="fc" id="L79">        return usuarioRepository.save(usuario);</span>
+    }
+
+    @Override
+    public void eliminarUsuario(Long id) {
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (!usuarioRepository.existsById(id)) {</span>
+<span class="nc" id="L85">            throw new RuntimeException(&quot;Usuario no encontrado&quot;);</span>
+        }
+<span class="nc" id="L87">        usuarioRepository.deleteById(id);</span>
+<span class="nc" id="L88">    }</span>
+
+    @Override
+    public boolean validarEdad(LocalDate fechaNacimiento) {
+<span class="fc" id="L92">        Period edad = Period.between(fechaNacimiento, LocalDate.now());</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        return edad.getYears() &gt;= 18;</span>
+    }
+
+    @Override
+    public boolean validarCorreo(String correo) {
+<span class="fc" id="L98">        String regex = &quot;^[A-Za-z0-9+_.-]+@(.+)$&quot;;</span>
+<span class="fc" id="L99">        return Pattern.compile(regex).matcher(correo).matches();</span>
+    }
+
+    @Override
+    public boolean validarCelular(String celular) {
+        // Máximo 13 caracteres, puede contener +
+<span class="pc bpc" id="L105" title="1 of 4 branches missed.">        return celular != null &amp;&amp; celular.length() &lt;= 13 &amp;&amp; </span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">               celular.matches(&quot;^\\+?[0-9]+$&quot;);</span>
+    }
+
+    @Override
+    public boolean validarDocumentoIdentidad(String documentoIdentidad) {
+        // Solo números
+<span class="pc bpc" id="L112" title="1 of 4 branches missed.">        return documentoIdentidad != null &amp;&amp; documentoIdentidad.matches(&quot;^[0-9]+$&quot;);</span>
+    }
+
+    private void validarDatosUsuario(Usuario usuario) {
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (!validarCorreo(usuario.getCorreo())) {</span>
+<span class="fc" id="L117">            throw new RuntimeException(&quot;Formato de correo inválido&quot;);</span>
+        }
+        
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (!validarCelular(usuario.getCelular())) {</span>
+<span class="fc" id="L121">            throw new RuntimeException(&quot;Formato de celular inválido&quot;);</span>
+        }
+        
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (!validarDocumentoIdentidad(usuario.getDocumentoIdentidad())) {</span>
+<span class="fc" id="L125">            throw new RuntimeException(&quot;Documento de identidad debe ser solo números&quot;);</span>
+        }
+        
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (!validarEdad(usuario.getFechaNacimiento())) {</span>
+<span class="fc" id="L129">            throw new RuntimeException(&quot;El usuario debe ser mayor de edad&quot;);</span>
+        }
+        
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {</span>
+<span class="fc" id="L133">            throw new RuntimeException(&quot;El correo ya está registrado&quot;);</span>
+        }
+        
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (usuarioRepository.existsByDocumentoIdentidad(usuario.getDocumentoIdentidad())) {</span>
+<span class="fc" id="L137">            throw new RuntimeException(&quot;El documento de identidad ya está registrado&quot;);</span>
+        }
+<span class="fc" id="L139">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
